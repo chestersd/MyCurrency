@@ -1,4 +1,4 @@
-package dev.kadyko.mycurrency.ui.theme
+package dev.kadyko.mycurrency.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 

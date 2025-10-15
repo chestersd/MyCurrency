@@ -1,4 +1,4 @@
-package dev.kadyko.mycurrency.ui.theme
+package dev.kadyko.mycurrency.presentation.theme
 
 import android.app.Activity
 import android.os.Build
