@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.currencyapp"
+    namespace = "dev.kadyko.mycurrency"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.currencyapp"
+        applicationId = "dev.kadyko.mycurrency"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
