@@ -1,5 +1,20 @@
 package dev.kadyko.mycurrency.data.repository
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
+import dev.kadyko.mycurrency.data.local.dao.CurrencyDao
+import dev.kadyko.mycurrency.data.mapper.toEntity
+import dev.kadyko.mycurrency.data.mapper.toCurrency
+import dev.kadyko.mycurrency.data.remote.api.CurrencyApiService
+import dev.kadyko.mycurrency.domain.model.Currency
+import dev.kadyko.mycurrency.domain.repository.CurrencyRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import javax.inject.Inject
+
 class CurrencyRepositoryImpl @Inject constructor(
     private val apiService: CurrencyApiService,
     private val currencyDao: CurrencyDao,

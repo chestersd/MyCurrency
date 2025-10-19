@@ -1,5 +1,7 @@
 package dev.kadyko.mycurrency.data.remote.model
 
+import com.google.gson.annotations.SerializedName
+
 data class CurrencyResponse(
     @SerializedName("Cur_ID") val id: Int,
     @SerializedName("Cur_ParentID") val parentId: Int,
@@ -19,4 +21,3 @@ data class CurrencyResponse(
     @SerializedName("Cur_DateStart") val dateStart: String,
     @SerializedName("Cur_DateEnd") val dateEnd: String
 )
-

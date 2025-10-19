@@ -1,5 +1,8 @@
 package dev.kadyko.mycurrency.data.remote.api
 
+import dev.kadyko.mycurrency.data.remote.model.CurrencyResponse
+import retrofit2.http.GET
+
 interface CurrencyApiService {
 
     @GET("exrates/currencies/451") // EUR

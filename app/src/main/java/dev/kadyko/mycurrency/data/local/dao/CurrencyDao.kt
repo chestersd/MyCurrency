@@ -1,5 +1,8 @@
 package dev.kadyko.mycurrency.data.local.dao
 
+import androidx.room.*
+import kotlinx.coroutines.flow.Flow
+
 @Dao
 interface CurrencyDao {
     @Query("SELECT * FROM currencies WHERE abbreviation = :abbreviation")
