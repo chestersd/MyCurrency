@@ -2,6 +2,7 @@ package dev.kadyko.mycurrency.data.local.dao
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
+import dev.kadyko.mycurrency.data.local.entity.CurrencyEntity
 
 @Dao
 interface CurrencyDao {

@@ -3,16 +3,15 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
-    alias(libs.plugins.kotlin.compose)
 }
 
 android {
-    namespace = "com.example.currencyapp"
+    namespace = "dev.kadyko.mycurrency"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.currencyapp"
-        minSdk = 26
+        applicationId = "dev.kadyko.mycurrency"
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -63,6 +62,10 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")
 
+    // Compose ViewModel support
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.7.6")
 
@@ -81,7 +84,10 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
 
-    // Shared Preferences
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // Shared Preferences (DataStore)
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     testImplementation("junit:junit:4.13.2")
@@ -91,4 +97,8 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+}
+
+kapt {
+    correctErrorTypes = true
 }

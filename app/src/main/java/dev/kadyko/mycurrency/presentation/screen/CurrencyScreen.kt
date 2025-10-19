@@ -36,6 +36,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -61,9 +63,11 @@ fun CurrencyScreen(
     viewModel: CurrencyViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val scaffoldState = rememberScaffoldState()
     val events by viewModel.events.collectAsState(initial = null)
     val context = LocalContext.current
-    val scaffoldState = remember { SnackbarHostState() }
+//    val scaffoldState = remember { SnackbarHostState() }
+
 
     LaunchedEffect(currencyType) {
         viewModel.loadCurrency(currencyType)
