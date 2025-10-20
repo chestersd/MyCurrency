@@ -2,77 +2,47 @@ package dev.kadyko.mycurrency.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.kadyko.mycurrency.domain.usecase.GetCurrencyUseCase
-import dev.kadyko.mycurrency.domain.usecase.RefreshCurrencyUseCase
-import dev.kadyko.mycurrency.domain.usecase.ShouldRefreshDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
+import dev.kadyko.mycurrency.domain.model.Currency
+import dev.kadyko.mycurrency.domain.repository.CurrencyRepository
+import dev.kadyko.mycurrency.domain.usecase.GetEurCurrencyUseCase
+import dev.kadyko.mycurrency.domain.usecase.GetRubCurrencyUseCase
+import dev.kadyko.mycurrency.domain.usecase.GetUsdCurrencyUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CurrencyViewModel @Inject constructor(
-    private val getCurrencyUseCase: GetCurrencyUseCase,
-    private val refreshCurrencyUseCase: RefreshCurrencyUseCase,
-    private val shouldRefreshDataUseCase: ShouldRefreshDataUseCase
+    private val repository: CurrencyRepository,
+    private val getRubCurrencyUseCase: GetRubCurrencyUseCase,
+    private val getUsdCurrencyUseCase: GetUsdCurrencyUseCase,
+    private val getEurCurrencyUseCase: GetEurCurrencyUseCase
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(CurrencyState())
-    val state: StateFlow<CurrencyState> = _state.asStateFlow()
+    private val _rubState = MutableStateFlow<Currency?>(null)
+    val rubState: StateFlow<Currency?> = _rubState
 
-    private val _events = MutableSharedFlow<CurrencyEvent>()
-    val events: SharedFlow<CurrencyEvent> = _events.asSharedFlow()
+    private val _usdState = MutableStateFlow<Currency?>(null)
+    val usdState: StateFlow<Currency?> = _usdState
 
-    fun loadCurrency(abbreviation: String) {
-        viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, error = null) }
+    private val _eurState = MutableStateFlow<Currency?>(null)
+    val eurState: StateFlow<Currency?> = _eurState
 
-            try {
-                // Проверяем, нужно ли обновить данные
-                if (shouldRefreshDataUseCase(abbreviation)) {
-                    refreshCurrencyUseCase(abbreviation)
-                }
-
-                getCurrencyUseCase(abbreviation).collect { currency ->
-                    _state.update {
-                        it.copy(
-                            currency = currency,
-                            isLoading = false
-                        )
-                    }
-                }
-            } catch (e: Exception) {
-                _state.update {
-                    it.copy(
-                        isLoading = false,
-                        error = e.message ?: "Unknown error"
-                    )
-                }
-                _events.emit(CurrencyEvent.ShowError(e.message ?: "Failed to load data"))
-            }
-        }
+    init {
+        loadCurrency(451, "RUB")
+        loadCurrency(456, "USD")
+        loadCurrency(431, "EUR")
     }
 
-    fun refresh(abbreviation: String) {
+    private fun loadCurrency(id: Int, abbr: String) {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, error = null) }
-            try {
-                refreshCurrencyUseCase(abbreviation)
-                _events.emit(CurrencyEvent.DataRefreshed)
-            } catch (e: Exception) {
-                _state.update {
-                    it.copy(
-                        isLoading = false,
-                        error = e.message ?: "Failed to refresh data"
-                    )
-                }
-                _events.emit(CurrencyEvent.ShowError("Failed to refresh data"))
+            repository.fetchAndSaveCurrency(id, abbr)
+            when (abbr) {
+                "RUB" -> getRubCurrencyUseCase().collect { _rubState.value = it }
+                "USD" -> getUsdCurrencyUseCase().collect { _usdState.value = it }
+                "EUR" -> getEurCurrencyUseCase().collect { _eurState.value = it }
             }
         }
     }

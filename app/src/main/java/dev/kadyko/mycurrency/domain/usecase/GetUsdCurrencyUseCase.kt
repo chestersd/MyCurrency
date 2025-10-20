@@ -5,10 +5,10 @@ import dev.kadyko.mycurrency.domain.repository.CurrencyRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetCurrencyUseCase @Inject constructor(
+class GetUsdCurrencyUseCase @Inject constructor(
     private val repository: CurrencyRepository
 ) {
-    operator fun invoke(abbreviation: String): Flow<Currency?> {
-        return repository.getCurrency(abbreviation)
+    operator fun invoke(): Flow<Currency?> {
+        return repository.getCurrencyByAbbr("USD")
     }
 }
