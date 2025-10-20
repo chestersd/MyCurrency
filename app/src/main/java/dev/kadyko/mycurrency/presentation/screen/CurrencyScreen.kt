@@ -12,21 +12,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CurrencyRuble
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.Euro
-import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
@@ -34,39 +28,35 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import dev.kadyko.mycurrency.domain.model.Currency
 import dev.kadyko.mycurrency.presentation.viewmodel.CurrencyEvent
 import dev.kadyko.mycurrency.presentation.viewmodel.CurrencyViewModel
-import kotlinx.coroutines.flow.collectAsState
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+import androidx.compose.material3.ExperimentalMaterial3Api
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CurrencyScreen(
     currencyType: String,
     viewModel: CurrencyViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    val scaffoldState = rememberScaffoldState()
+//    val scaffoldState = rememberScaffoldState()
     val events by viewModel.events.collectAsState(initial = null)
     val context = LocalContext.current
-//    val scaffoldState = remember { SnackbarHostState() }
+    val scaffoldState = remember { SnackbarHostState() }
 
 
     LaunchedEffect(currencyType) {
@@ -262,3 +252,9 @@ private fun formatDate(dateString: String): String {
         dateString
     }
 }
+
+data class CurrencyDisplayInfo(
+    val title: String,
+    val value: String,
+    val subtitle: String? = null
+)
