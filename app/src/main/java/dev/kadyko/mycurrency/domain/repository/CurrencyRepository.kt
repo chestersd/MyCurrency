@@ -4,6 +4,6 @@ import dev.kadyko.mycurrency.domain.model.Currency
 import kotlinx.coroutines.flow.Flow
 
 interface CurrencyRepository {
-    suspend fun fetchAndSaveCurrency(id: Int, abbreviation: String)
+    suspend fun fetchAndSaveCurrency(currencyCode: String) // <-- Изменили сигнатуру
     fun getCurrencyByAbbr(abbr: String): Flow<Currency?>
 }

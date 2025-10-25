@@ -13,13 +13,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle // <-- Добавлен импорт
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.findStartDestination // <-- Добавлен импорт
 import dagger.hilt.android.AndroidEntryPoint
+import dev.kadyko.mycurrency.R // <-- Импорт ресурсов
 import dev.kadyko.mycurrency.presentation.theme.CurrencyAppTheme
 import dev.kadyko.mycurrency.presentation.viewmodel.CurrencyViewModel
 
@@ -31,10 +34,14 @@ class MainActivity : ComponentActivity() {
             CurrencyAppTheme {
                 val navController = rememberNavController()
                 val navItems = listOf(
-                    NavItem("rub", "RUB", Icons.Default.Paid),
-                    NavItem("usd", "USD", Icons.Default.AttachMoney),
-                    NavItem("eur", "EUR", Icons.Default.Euro)
+                    NavItem("rub", stringResource(R.string.rub_label), Icons.Default.Paid),
+                    NavItem("usd", stringResource(R.string.usd_label), Icons.Default.AttachMoney),
+                    NavItem("eur", stringResource(R.string.eur_label), Icons.Default.Euro)
                 )
+
+                val viewModel: CurrencyViewModel = hiltViewModel()
+                val error by viewModel.errorState.collectAsStateWithLifecycle()
+                val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
 
                 Scaffold(
                     bottomBar = {
@@ -46,9 +53,8 @@ class MainActivity : ComponentActivity() {
                                     selected = navController.currentDestination?.route == item.route,
                                     onClick = {
                                         navController.navigate(item.route) {
-                                            // Очищаем стек навигации, чтобы не создавать дубликаты
                                             popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
+                                                saveState = true // <-- Исправлен вызов: это сеттер, а не метод
                                             }
                                             launchSingleTop = true
                                             restoreState = true
@@ -60,13 +66,26 @@ class MainActivity : ComponentActivity() {
                     }
                 ) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        NavHost(
-                            navController = navController,
-                            startDestination = "rub"
-                        ) {
-                            composable("rub") { CurrencyScreen("RUB", hiltViewModel()) }
-                            composable("usd") { CurrencyScreen("USD", hiltViewModel()) }
-                            composable("eur") { CurrencyScreen("EUR", hiltViewModel()) }
+                        if (error != null) {
+                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Text(text = stringResource(R.string.error_occurred))
+                                    Text(text = error ?: "", color = MaterialTheme.colorScheme.error)
+                                }
+                            }
+                        } else if (isLoading) {
+                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                CircularProgressIndicator()
+                            }
+                        } else {
+                            NavHost(
+                                navController = navController,
+                                startDestination = "rub"
+                            ) {
+                                composable("rub") { CurrencyScreen("RUB", viewModel) }
+                                composable("usd") { CurrencyScreen("USD", viewModel) }
+                                composable("eur") { CurrencyScreen("EUR", viewModel) }
+                            }
                         }
                     }
                 }
@@ -75,15 +94,14 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-// Вспомогательный класс для элементов навигации
 data class NavItem(val route: String, val label: String, val icon: androidx.compose.ui.graphics.vector.ImageVector)
 
 @Composable
 fun CurrencyScreen(currencyCode: String, viewModel: CurrencyViewModel) {
     val currency by when (currencyCode) {
-        "RUB" -> viewModel.rubState.collectAsStateWithLifecycle()
-        "USD" -> viewModel.usdState.collectAsStateWithLifecycle()
-        "EUR" -> viewModel.eurState.collectAsStateWithLifecycle()
+        "RUB" -> viewModel.rubState.collectAsStateWithLifecycle() // <-- Используем import
+        "USD" -> viewModel.usdState.collectAsStateWithLifecycle() // <-- Используем import
+        "EUR" -> viewModel.eurState.collectAsStateWithLifecycle() // <-- Используем import
         else -> throw IllegalArgumentException("Unknown currency: $currencyCode")
     }
 
@@ -94,7 +112,7 @@ fun CurrencyScreen(currencyCode: String, viewModel: CurrencyViewModel) {
     ) {
         item {
             Text(
-                text = "$currencyCode Курс",
+                text = stringResource(R.string.currency_rate, currencyCode),
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
             )
@@ -102,7 +120,7 @@ fun CurrencyScreen(currencyCode: String, viewModel: CurrencyViewModel) {
 
         item {
             if (currency != null) {
-                val c = currency // Локальная переменная для избежания ошибки "delegated property"
+                val c = currency
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -111,117 +129,17 @@ fun CurrencyScreen(currencyCode: String, viewModel: CurrencyViewModel) {
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text("Название: ${c.name}")
-                        Text("Квота: ${c.quotName}")
-                        Text("Масштаб: ${c.scale}")
-                        Text("Курс: ${c.officialRate} BYN")
+                        Text(stringResource(R.string.name, c.name))
+                        Text(stringResource(R.string.quote, c.quotName))
+                        Text(stringResource(R.string.scale, c.scale))
+                        Text(stringResource(R.string.rate, c.officialRate))
                     }
                 }
             } else {
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    Text("Загрузка...")
+                    Text(stringResource(R.string.loading))
                 }
             }
         }
     }
 }
-
-//package dev.kadyko.mycurrency.presentation.ui
-//
-//import android.os.Bundle
-//import androidx.activity.ComponentActivity
-//import androidx.activity.compose.setContent
-//import androidx.compose.foundation.layout.Arrangement
-//import androidx.compose.foundation.layout.Box
-//import androidx.compose.foundation.layout.Column
-//import androidx.compose.foundation.layout.PaddingValues
-//import androidx.compose.foundation.layout.fillMaxSize
-//import androidx.compose.foundation.layout.fillMaxWidth
-//import androidx.compose.foundation.layout.padding
-//import androidx.compose.foundation.lazy.LazyColumn
-//import androidx.compose.material3.Card
-//import androidx.compose.material3.CardDefaults
-//import androidx.compose.material3.MaterialTheme
-//import androidx.compose.material3.Text
-//import androidx.compose.runtime.Composable
-//import androidx.compose.runtime.getValue
-//import androidx.compose.ui.Alignment
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.unit.dp
-//import androidx.hilt.navigation.compose.hiltViewModel
-//import androidx.lifecycle.compose.collectAsStateWithLifecycle
-//import androidx.navigation.compose.NavHost
-//import androidx.navigation.compose.composable
-//import androidx.navigation.compose.rememberNavController
-//import dagger.hilt.android.AndroidEntryPoint
-//import dev.kadyko.mycurrency.presentation.theme.CurrencyAppTheme
-//import dev.kadyko.mycurrency.presentation.viewmodel.CurrencyViewModel
-//
-//@AndroidEntryPoint
-//class MainActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContent {
-//            CurrencyAppTheme {
-//                val navController = rememberNavController()
-//                NavHost(
-//                    navController = navController,
-//                    startDestination = "rub"
-//                ) {
-//                    composable("rub") { CurrencyScreen("RUB", hiltViewModel()) }
-//                    composable("usd") { CurrencyScreen("USD", hiltViewModel()) }
-//                    composable("eur") { CurrencyScreen("EUR", hiltViewModel()) }
-//                }
-//            }
-//        }
-//    }
-//}
-//
-//@Composable
-//fun CurrencyScreen(currencyCode: String, viewModel: CurrencyViewModel) {
-//    val currency by when (currencyCode) {
-//        "RUB" -> viewModel.rubState.collectAsStateWithLifecycle()
-//        "USD" -> viewModel.usdState.collectAsStateWithLifecycle()
-//        "EUR" -> viewModel.eurState.collectAsStateWithLifecycle()
-//        else -> throw IllegalArgumentException("Unknown currency: $currencyCode")
-//    }
-//
-//    LazyColumn(
-//        modifier = Modifier.fillMaxSize(),
-//        verticalArrangement = Arrangement.spacedBy(8.dp),
-//        contentPadding = PaddingValues(16.dp)
-//    ) {
-//        item {
-//            Text(
-//                text = "$currencyCode Курс",
-//                style = MaterialTheme.typography.headlineMedium,
-//                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
-//            )
-//        }
-//
-//        item {
-//            if (currency != null) {
-//                Card(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-//                ) {
-//                    Column(
-//                        modifier = Modifier.padding(16.dp),
-//                        verticalArrangement = Arrangement.spacedBy(8.dp)
-//                    ) {
-//                        // Используем !! для утверждения, что currency не null (поскольку проверили выше)
-//                        Text("Название: ${currency!!.name}")     // <-- Добавлен !!
-//                        Text("Квота: ${currency!!.quotName}")   // <-- Добавлен !!
-//                        Text("Масштаб: ${currency!!.scale}")    // <-- Добавлен !!
-//                        Text("Курс: ${currency!!.officialRate} BYN") // <-- Добавлен !!
-//                    }
-//                }
-//            } else {
-//                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-//                    Text("Загрузка...")
-//                }
-//            }
-//        }
-//    }
-//}
-//

@@ -5,6 +5,7 @@ import dev.kadyko.mycurrency.data.local.LocalCurrencyEntity
 import dev.kadyko.mycurrency.data.remote.CurrencyApiService
 import dev.kadyko.mycurrency.domain.model.Currency
 import dev.kadyko.mycurrency.domain.repository.CurrencyRepository
+import dev.kadyko.mycurrency.util.Constants // <-- Импорт
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -14,10 +15,17 @@ class CurrencyRepositoryImpl @Inject constructor(
     private val currencyDao: CurrencyDao
 ) : CurrencyRepository {
 
-    override suspend fun fetchAndSaveCurrency(id: Int, abbreviation: String) {
+    // Переместили id сюда
+    override suspend fun fetchAndSaveCurrency(currencyCode: String) {
+        val id = when (currencyCode) {
+            "RUB" -> Constants.RUB_ID // <-- Используем константы
+            "USD" -> Constants.USD_ID
+            "EUR" -> Constants.EUR_ID
+            else -> throw IllegalArgumentException("Unknown currency code: $currencyCode")
+        }
         val dto = apiService.getCurrencyById(id)
         val entity = LocalCurrencyEntity(
-            abbreviation = abbreviation,
+            abbreviation = currencyCode,
             name = dto.curName,
             quotName = dto.curQuotName,
             scale = dto.curScale,

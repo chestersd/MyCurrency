@@ -8,9 +8,11 @@ import dev.kadyko.mycurrency.domain.repository.CurrencyRepository
 import dev.kadyko.mycurrency.domain.usecase.GetEurCurrencyUseCase
 import dev.kadyko.mycurrency.domain.usecase.GetRubCurrencyUseCase
 import dev.kadyko.mycurrency.domain.usecase.GetUsdCurrencyUseCase
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,19 +32,46 @@ class CurrencyViewModel @Inject constructor(
     private val _eurState = MutableStateFlow<Currency?>(null)
     val eurState: StateFlow<Currency?> = _eurState
 
+    private val _errorState = MutableStateFlow<String?>(null)
+    val errorState: StateFlow<String?> = _errorState
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
     init {
-        loadCurrency(451, "RUB")
-        loadCurrency(456, "USD")
-        loadCurrency(431, "EUR")
+        loadCurrencies()
     }
 
-    private fun loadCurrency(id: Int, abbr: String) {
+    private fun loadCurrencies() {
         viewModelScope.launch {
-            repository.fetchAndSaveCurrency(id, abbr)
-            when (abbr) {
-                "RUB" -> getRubCurrencyUseCase().collect { _rubState.value = it }
-                "USD" -> getUsdCurrencyUseCase().collect { _usdState.value = it }
-                "EUR" -> getEurCurrencyUseCase().collect { _eurState.value = it }
+            _isLoading.value = true
+            _errorState.value = null
+            try {
+                // Запускаем fetch на IO Dispatcher
+                withContext(kotlinx.coroutines.Dispatchers.IO) {
+                    val rubJob = async { repository.fetchAndSaveCurrency("RUB") }
+                    val usdJob = async { repository.fetchAndSaveCurrency("USD") }
+                    val eurJob = async { repository.fetchAndSaveCurrency("EUR") }
+
+                    rubJob.await()
+                    usdJob.await()
+                    eurJob.await()
+                }
+
+                // Подписки на Flow в основном потоке
+                launch {
+                    getRubCurrencyUseCase().collect { _rubState.value = it }
+                }
+                launch {
+                    getUsdCurrencyUseCase().collect { _usdState.value = it }
+                }
+                launch {
+                    getEurCurrencyUseCase().collect { _eurState.value = it }
+                }
+            } catch (e: Exception) {
+                _errorState.value = e.message ?: "An error occurred"
+            } finally {
+                _isLoading.value = false
             }
         }
     }

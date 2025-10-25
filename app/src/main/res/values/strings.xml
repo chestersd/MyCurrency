@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">MyCurrency</string>
+    <string name="rub_label">RUB</string>
+    <string name="usd_label">USD</string>
+    <string name="eur_label">EUR</string>
+    <string name="currency_rate">%s Курс</string>
+    <string name="name">Название: %s</string>
+    <string name="quote">Квота: %s</string>
+    <string name="scale">Масштаб: %d</string>
+    <string name="rate">Курс: %.4f BYN</string> <!-- Форматирование числа -->
+    <string name="loading">Загрузка...</string>
+    <string name="error_occurred">Произошла ошибка:</string>
 </resources>
