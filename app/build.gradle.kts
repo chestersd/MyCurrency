@@ -2,11 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
-    // УДАЛИТЕ ЭТУ СТРОКУ:
-    // id("com.google.devtools.ksp") version "1.9.10-1.0.13"
-    // ЗАМЕНИТЕ НА ЭТУ:
-//    id("com.google.devtools.ksp") // <-- Только ID, версия из корня
     alias(libs.plugins.ksp)
+    alias(libs.plugins.org.jetbrains.kotlin.plugin.compose)
 }
 
 android {
@@ -25,10 +22,6 @@ android {
 
     buildFeatures {
         compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
     }
 
     compileOptions {
