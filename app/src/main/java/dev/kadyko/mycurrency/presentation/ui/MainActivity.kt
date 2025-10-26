@@ -13,8 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.CurrencyRuble
 import androidx.compose.material.icons.filled.Euro
-import androidx.compose.material.icons.filled.Paid
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
             CurrencyAppTheme {
                 val navController = rememberNavController()
                 val navItems = listOf(
-                    NavItem("rub", stringResource(R.string.rub_label), Icons.Default.Paid),
+                    NavItem("rub", stringResource(R.string.rub_label), Icons.Default.CurrencyRuble),
                     NavItem("usd", stringResource(R.string.usd_label), Icons.Default.AttachMoney),
                     NavItem("eur", stringResource(R.string.eur_label), Icons.Default.Euro)
                 )
@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
                                     selected = navController.currentDestination?.route == item.route,
                                     onClick = {
                                         navController.navigate(item.route) {
-                                            popUpTo(navController.graph.findStartDestination().id) { // <-- Вот здесь используется findStartDestination()
+                                            popUpTo(navController.graph.findStartDestination().id) {
                                                 saveState = true
                                             }
                                             launchSingleTop = true
@@ -115,9 +115,9 @@ data class NavItem(val route: String, val label: String, val icon: ImageVector)
 @Composable
 fun CurrencyScreen(currencyCode: String, viewModel: CurrencyViewModel) {
     val currency by when (currencyCode) {
-        "RUB" -> viewModel.rubState.collectAsStateWithLifecycle() // <-- Используем import
-        "USD" -> viewModel.usdState.collectAsStateWithLifecycle() // <-- Используем import
-        "EUR" -> viewModel.eurState.collectAsStateWithLifecycle() // <-- Используем import
+        "RUB" -> viewModel.rubState.collectAsStateWithLifecycle()
+        "USD" -> viewModel.usdState.collectAsStateWithLifecycle()
+        "EUR" -> viewModel.eurState.collectAsStateWithLifecycle()
         else -> throw IllegalArgumentException("Unknown currency: $currencyCode")
     }
 

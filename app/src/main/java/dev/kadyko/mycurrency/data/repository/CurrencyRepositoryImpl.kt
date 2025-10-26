@@ -15,10 +15,9 @@ class CurrencyRepositoryImpl @Inject constructor(
     private val currencyDao: CurrencyDao
 ) : CurrencyRepository {
 
-    // Переместили id сюда
     override suspend fun fetchAndSaveCurrency(currencyCode: String) {
         val id = when (currencyCode) {
-            "RUB" -> Constants.RUB_ID // <-- Используем константы
+            "RUB" -> Constants.RUB_ID
             "USD" -> Constants.USD_ID
             "EUR" -> Constants.EUR_ID
             else -> throw IllegalArgumentException("Unknown currency code: $currencyCode")

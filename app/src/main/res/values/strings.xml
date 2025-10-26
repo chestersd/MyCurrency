@@ -7,7 +7,7 @@
     <string name="name">Название: %s</string>
     <string name="quote">Квота: %s</string>
     <string name="scale">Масштаб: %d</string>
-    <string name="rate">Курс: %.4f BYN</string> <!-- Форматирование числа -->
+    <string name="rate">Курс: %.4f BYN</string>
     <string name="loading">Загрузка...</string>
     <string name="error_occurred">Произошла ошибка:</string>
 </resources>

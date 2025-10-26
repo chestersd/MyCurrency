@@ -47,7 +47,6 @@ class CurrencyViewModel @Inject constructor(
             _isLoading.value = true
             _errorState.value = null
             try {
-                // Запускаем fetch на IO Dispatcher
                 withContext(kotlinx.coroutines.Dispatchers.IO) {
                     val rubJob = async { repository.fetchAndSaveCurrency("RUB") }
                     val usdJob = async { repository.fetchAndSaveCurrency("USD") }
@@ -58,7 +57,6 @@ class CurrencyViewModel @Inject constructor(
                     eurJob.await()
                 }
 
-                // Подписки на Flow в основном потоке
                 launch {
                     getRubCurrencyUseCase().collect { _rubState.value = it }
                 }
