@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.CurrencyRuble
 import androidx.compose.material.icons.filled.Euro
 import androidx.compose.material.icons.filled.Paid
 import androidx.compose.material3.Card
@@ -50,7 +51,7 @@ class MainActivity : ComponentActivity() {
             CurrencyAppTheme {
                 val navController = rememberNavController()
                 val navItems = listOf(
-                    NavItem("rub", stringResource(R.string.rub_label), Icons.Default.Paid),
+                    NavItem("rub", stringResource(R.string.rub_label), Icons.Default.CurrencyRuble),
                     NavItem("usd", stringResource(R.string.usd_label), Icons.Default.AttachMoney),
                     NavItem("eur", stringResource(R.string.eur_label), Icons.Default.Euro)
                 )
