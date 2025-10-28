@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "dev.kadyko.mycurrency"
-        minSdk = 26 // Обновлено до 26
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -30,7 +30,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 }
 
@@ -44,33 +44,17 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-
-    // Compose Navigation
     implementation(libs.androidx.navigation.compose)
-
-    // Hilt
     implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler) // <-- Используем KSP для Hilt
+    ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
-
-    // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-
-    // Coroutines
     implementation(libs.kotlinx.coroutines.android)
-
-    // Lifecycle ViewModel for Compose
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-
-    // Room
     implementation(libs.androidx.room.runtime)
-    ksp(libs.androidx.room.compiler) // <-- Используем KSP для Room
+    ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
-
-    // Shared Preferences
     implementation(libs.androidx.preference.ktx)
-
-    // Compose Material Icons Extended
     implementation(libs.androidx.compose.material.icons.extended)
 }
