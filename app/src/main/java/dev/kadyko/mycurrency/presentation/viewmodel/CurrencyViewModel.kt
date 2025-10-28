@@ -58,7 +58,7 @@ class CurrencyViewModel @Inject constructor(
                     eurJob.await()
                 }
 
-                // Подписки на Flow в основном потоке
+
                 launch {
                     getRubCurrencyUseCase().collect { _rubState.value = it }
                 }

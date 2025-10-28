@@ -5,7 +5,7 @@ object Constants {
     const val DATABASE_NAME = "currency_database"
 
     // IDs валют
-    const val RUB_ID = 451
-    const val USD_ID = 456
-    const val EUR_ID = 431
+    const val RUB_ID = 456
+    const val USD_ID = 431
+    const val EUR_ID = 451
 }

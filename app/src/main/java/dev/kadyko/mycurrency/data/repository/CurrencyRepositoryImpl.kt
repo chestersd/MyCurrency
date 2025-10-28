@@ -27,7 +27,7 @@ class CurrencyRepositoryImpl @Inject constructor(
         val entity = LocalCurrencyEntity(
             abbreviation = currencyCode,
             name = dto.curName,
-            quotName = dto.curQuotName,
+            quotName = "${dto.curScale} ${dto.curName}",
             scale = dto.curScale,
             officialRate = dto.curOfficialRate
         )
