@@ -152,13 +152,13 @@ fun CurrencyScreen(currencyCode: String, viewModel: CurrencyViewModel) {
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text(stringResource(R.string.name, c.name))
-                        // УБРАНО: Text(stringResource(R.string.quote, c.quotName))
-                        // Показываем "за 100 RUB" только для RUB
-                        if (currencyCode == "RUB") {
-                            Text(stringResource(R.string.scale_rub, c.scale))
-                        }
+                        Text(stringResource(R.string.scale_with_name, c.scale, c.name))
                         Text(stringResource(R.string.rate, c.officialRate))
+//                        Text(stringResource(R.string.name, c.name))
+//                        if (currencyCode == "RUB") {
+//                            Text(stringResource(R.string.scale_rub, c.scale))
+//                        }
+//                        Text(stringResource(R.string.rate, c.officialRate))
                     }
                 }
             } ?: run {
@@ -169,25 +169,20 @@ fun CurrencyScreen(currencyCode: String, viewModel: CurrencyViewModel) {
         }
 
         item {
-            // --- Оборачиваем Button в Box ---
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp), // <-- Отступ теперь у Box
-                contentAlignment = Alignment.Center // <-- Центрируем содержимое Box
+                    .padding(top = 16.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Button(
                     onClick = { viewModel.loadSingleCurrency(currencyCode) },
-                    // --- Применяем модификаторы к Button ---
                     modifier = Modifier
-                        .widthIn(max = 200.dp) // <-- Максимальная ширина кнопки
-                    // align не нужен, так как Box центрирует содержимое
+                        .widthIn(max = 200.dp)
                 ) {
                     Text(stringResource(R.string.refresh_button_text))
                 }
-                // ---
             }
-            // ---
         }
     }
 }

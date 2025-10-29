@@ -1,31 +1,15 @@
-<!-- res/values/strings.xml -->
 <resources>
     <string name="app_name">MyCurrency</string>
     <string name="rub_label">RUB</string>
     <string name="usd_label">USD</string>
     <string name="eur_label">EUR</string>
-    <string name="currency_rate">%s Курс</string>
-    <string name="name">Название: %s</string>
-    <!-- УБРАНО: <string name="quote">Квота: %s</string> -->
-    <!-- НОВАЯ СТРОКА ДЛЯ RUB -->
+    <string name="currency_rate">Курс %s</string>
+    <string name="name">Наименование валюты: %s</string>
     <string name="scale_rub">за 100 RUB: %d</string>
     <string name="rate">Курс: %.4f BYN</string>
+    <string name="scale_with_name">За %d %s</string>
     <string name="connection_lost">Нет соединения с Интернет</string>
     <string name="error_occurred">Произошла ошибка:</string>
-    <string name="refresh_button_text">Обновить</string> <!-- Уже была добавлена ранее -->
+    <string name="retry_button_text">Повторить</string>
+    <string name="refresh_button_text">Обновить</string>
 </resources>
-
-<!--<resources>-->
-<!--    <string name="app_name">MyCurrency</string>-->
-<!--    <string name="rub_label">RUB</string>-->
-<!--    <string name="usd_label">USD</string>-->
-<!--    <string name="eur_label">EUR</string>-->
-<!--    <string name="currency_rate">%s Курс</string>-->
-<!--    <string name="name">Название: %s</string>-->
-<!--&lt;!&ndash;    <string name="quote">Квота: %s</string>&ndash;&gt;-->
-<!--    <string name="scale">Масштаб: %d</string>-->
-<!--    <string name="rate">Курс: %.4f BYN</string> &lt;!&ndash; Форматирование числа &ndash;&gt;-->
-<!--    <string name="loading">Загрузка...</string>-->
-<!--    <string name="error_occurred">Произошла ошибка:</string>-->
-<!--    <string name="refresh_button_text">Обновить</string>-->
-<!--</resources>-->

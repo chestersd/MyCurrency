@@ -33,7 +33,7 @@ class CurrencyRepositoryImpl @Inject constructor(
             )
             currencyDao.insertCurrency(entity)
         } catch (e: java.net.UnknownHostException) {
-            throw Exception("Нет подключения к интернету или API недоступно", e)
+            throw Exception("Нет подключения к интернету или API недоступен", e)
         } catch (e: java.io.IOException) {
             throw Exception("Ошибка сети", e)
         }

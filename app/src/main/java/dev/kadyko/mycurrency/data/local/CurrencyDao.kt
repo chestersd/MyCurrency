@@ -13,4 +13,10 @@ interface CurrencyDao {
 
     @Query("SELECT * FROM currencies WHERE abbreviation = :abbr")
     fun getCurrencyByAbbr(abbr: String): Flow<LocalCurrencyEntity?>
+
+    @Query("SELECT * FROM currencies WHERE name = :name")
+    fun getCurrencyByName(name: String): Flow<LocalCurrencyEntity?>
+
+    @Query("SELECT * FROM currencies WHERE name = :scale")
+    fun getCurrencyByName(scale: Int): Flow<LocalCurrencyEntity?>
 }

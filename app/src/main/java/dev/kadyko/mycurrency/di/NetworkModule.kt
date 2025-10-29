@@ -20,7 +20,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideRetrofit(): Retrofit = Retrofit.Builder()
-        .baseUrl(Constants.BASE_URL) // <-- Используем константу
+        .baseUrl(Constants.BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
@@ -33,7 +33,7 @@ object NetworkModule {
     fun provideDatabase(@ApplicationContext context: Context) = Room.databaseBuilder(
         context,
         CurrencyDatabase::class.java,
-        Constants.DATABASE_NAME // <-- Используем константу
+        Constants.DATABASE_NAME
     ).build()
 
     @Provides
