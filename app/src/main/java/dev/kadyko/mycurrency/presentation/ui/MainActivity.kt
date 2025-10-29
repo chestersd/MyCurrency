@@ -15,7 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.CurrencyRuble
 import androidx.compose.material.icons.filled.Euro
-import androidx.compose.material.icons.filled.Paid
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -115,12 +115,7 @@ data class NavItem(val route: String, val label: String, val icon: ImageVector)
 
 @Composable
 fun CurrencyScreen(currencyCode: String, viewModel: CurrencyViewModel) {
-    val currency by when (currencyCode) {
-        "RUB" -> viewModel.rubState.collectAsStateWithLifecycle() // <-- Используем import
-        "USD" -> viewModel.usdState.collectAsStateWithLifecycle() // <-- Используем import
-        "EUR" -> viewModel.eurState.collectAsStateWithLifecycle() // <-- Используем import
-        else -> throw IllegalArgumentException("Unknown currency: $currencyCode")
-    }
+    val currency by viewModel.getStateForCurrency(currencyCode).collectAsStateWithLifecycle()
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -146,10 +141,13 @@ fun CurrencyScreen(currencyCode: String, viewModel: CurrencyViewModel) {
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text(stringResource(R.string.name, c!!.name))
-                        Text(stringResource(R.string.quote, c!!.quotName))
-                        Text(stringResource(R.string.scale, c!!.scale))
-                        Text(stringResource(R.string.rate, c!!.officialRate))
+                        Text(stringResource(R.string.name, c.name))
+                        // УБРАНО: Text(stringResource(R.string.quote, c.quotName))
+                        // Показываем "за 100 RUB" только для RUB
+                        if (currencyCode == "RUB") {
+                            Text(stringResource(R.string.scale_rub, c.scale))
+                        }
+                        Text(stringResource(R.string.rate, c.officialRate))
                     }
                 }
             } else {
@@ -158,5 +156,18 @@ fun CurrencyScreen(currencyCode: String, viewModel: CurrencyViewModel) {
                 }
             }
         }
+
+        // --- Добавляем кнопку "Обновить" ---
+        item {
+            Button(
+                onClick = { viewModel.loadSingleCurrency(currencyCode) }, // <-- Вызываем функцию из ViewModel
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+            ) {
+                Text(stringResource(R.string.refresh_button_text)) // <-- Используем строковый ресурс
+            }
+        }
+        // ---
     }
 }

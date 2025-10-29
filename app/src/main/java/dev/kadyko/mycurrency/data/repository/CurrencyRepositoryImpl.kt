@@ -15,23 +15,28 @@ class CurrencyRepositoryImpl @Inject constructor(
     private val currencyDao: CurrencyDao
 ) : CurrencyRepository {
 
-    // Переместили id сюда
     override suspend fun fetchAndSaveCurrency(currencyCode: String) {
         val id = when (currencyCode) {
-            "RUB" -> Constants.RUB_ID // <-- Используем константы
+            "RUB" -> Constants.RUB_ID
             "USD" -> Constants.USD_ID
             "EUR" -> Constants.EUR_ID
             else -> throw IllegalArgumentException("Unknown currency code: $currencyCode")
         }
-        val dto = apiService.getCurrencyById(id)
-        val entity = LocalCurrencyEntity(
-            abbreviation = currencyCode,
-            name = dto.curName,
-            quotName = "${dto.curScale} ${dto.curName}",
-            scale = dto.curScale,
-            officialRate = dto.curOfficialRate
-        )
-        currencyDao.insertCurrency(entity)
+        try {
+            val dto = apiService.getCurrencyById(id)
+            val entity = LocalCurrencyEntity(
+                abbreviation = currencyCode,
+                name = dto.curName,
+                quotName = "${dto.curScale} ${dto.curName}",
+                scale = dto.curScale,
+                officialRate = dto.curOfficialRate
+            )
+            currencyDao.insertCurrency(entity)
+        } catch (e: java.net.UnknownHostException) {
+            throw Exception("Нет подключения к интернету или API недоступно", e)
+        } catch (e: java.io.IOException) {
+            throw Exception("Ошибка сети", e)
+        }
     }
 
     override fun getCurrencyByAbbr(abbr: String): Flow<Currency?> {
