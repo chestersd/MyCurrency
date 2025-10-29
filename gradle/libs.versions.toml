@@ -1,7 +1,7 @@
 [versions]
 ksp = "2.2.10-2.0.2"
 agp = "8.11.2"
-kotlin = "2.2.20"
+kotlin = "2.2.21"
 compose-compiler = "2.2.20"
 hilt = "2.57.2"
 coreKtx = "1.17.0"

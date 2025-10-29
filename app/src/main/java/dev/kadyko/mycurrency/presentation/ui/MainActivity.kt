@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachMoney
@@ -84,14 +85,23 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
                         if (error != null) {
-                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     Text(text = stringResource(R.string.error_occurred))
-                                    Text(text = error ?: "", color = MaterialTheme.colorScheme.error)
+                                    Text(
+                                        text = error ?: "",
+                                        color = MaterialTheme.colorScheme.error
+                                    )
                                 }
                             }
                         } else if (isLoading) {
-                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
                                 CircularProgressIndicator()
                             }
                         } else {
@@ -126,13 +136,14 @@ fun CurrencyScreen(currencyCode: String, viewModel: CurrencyViewModel) {
             Text(
                 text = stringResource(R.string.currency_rate, currencyCode),
                 style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
             )
         }
 
         item {
-            if (currency != null) {
-                val c = currency
+            currency?.let { c ->
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -150,24 +161,33 @@ fun CurrencyScreen(currencyCode: String, viewModel: CurrencyViewModel) {
                         Text(stringResource(R.string.rate, c.officialRate))
                     }
                 }
-            } else {
+            } ?: run {
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    Text(stringResource(R.string.loading))
+                    Text(stringResource(R.string.connection_lost))
                 }
             }
         }
 
-        // --- Добавляем кнопку "Обновить" ---
         item {
-            Button(
-                onClick = { viewModel.loadSingleCurrency(currencyCode) }, // <-- Вызываем функцию из ViewModel
+            // --- Оборачиваем Button в Box ---
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp)
+                    .padding(top = 16.dp), // <-- Отступ теперь у Box
+                contentAlignment = Alignment.Center // <-- Центрируем содержимое Box
             ) {
-                Text(stringResource(R.string.refresh_button_text)) // <-- Используем строковый ресурс
+                Button(
+                    onClick = { viewModel.loadSingleCurrency(currencyCode) },
+                    // --- Применяем модификаторы к Button ---
+                    modifier = Modifier
+                        .widthIn(max = 200.dp) // <-- Максимальная ширина кнопки
+                    // align не нужен, так как Box центрирует содержимое
+                ) {
+                    Text(stringResource(R.string.refresh_button_text))
+                }
+                // ---
             }
+            // ---
         }
-        // ---
     }
 }
