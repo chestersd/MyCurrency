@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">Моя Валюта</string>
+    <string name="nav_rates">Курсы</string>
+    <string name="nav_converter">Конвертер</string>
+    <string name="nav_favorites">Избранное</string>
+    <string name="nav_profile">Профиль</string>
+    <string name="nav_settings">Настройки</string>
+
+    <string name="search_placeholder">Поиск валюты…</string>
+    <string name="base_currency">Базовая валюта</string>
+    <string name="last_updated">Обновлено: %s</string>
+    <string name="convert">Сконвертировать</string>
+    <string name="amount">Сумма</string>
+    <string name="from">Из</string>
+    <string name="to">В</string>
+    <string name="result">Результат</string>
+    <string name="swap">Поменять</string>
+    <string name="no_favorites">Нет сохраненных избранных валют</string>
+    <string name="add_to_favorites">Добавляйте валюты в избранное на экране курсов</string>
+
+    <string name="auth_title">Авторизация Firebase</string>
+    <string name="email">Электронная почта</string>
+    <string name="password">Пароль</string>
+    <string name="sign_in">Войти</string>
+    <string name="sign_up">Зарегистрироваться</string>
+    <string name="sign_in_guest">Войти как гость</string>
+    <string name="sign_out">Выйти</string>
+    <string name="logged_in_as">Вы вошли как: %s</string>
+    <string name="guest_user">Гость</string>
+    <string name="auth_success">Успешная авторизация!</string>
+    <string name="auth_failed">Ошибка авторизации</string>
+
+    <string name="language">Язык приложения</string>
+    <string name="language_en">Английский</string>
+    <string name="language_ru">Русский</string>
+    <string name="auto_update">Автообновление в фоне (WorkManager)</string>
+    <string name="send_test_notification">Отправить тестовое уведомление</string>
+    <string name="refresh">Обновить курсы</string>
+    <string name="rates_updated_notification_title">Курсы валют обновлены</string>
+    <string name="rates_updated_notification_text">Свежие курсы валют были синхронизированы в фоне.</string>
+    <string name="deep_link_test">Диплинк активирован!</string>
+</resources>
